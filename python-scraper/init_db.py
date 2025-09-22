@@ -22,7 +22,6 @@ def init_db():
     conn.close()
 
 async def save_news(news):
-    print(news)
     conn = get_connection_to_db()
     cur = conn.cursor()
 
