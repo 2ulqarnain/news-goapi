@@ -15,6 +15,7 @@ class News(TypedDict):
     image_url: str | None
 
 async def main():
+    await init_db()
     news_list : List[News] = []
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=False)
@@ -49,6 +50,5 @@ async def main():
             print(f"Error in slug: {news['slug']}, {error}")
 
 if __name__ == '__main__':
-    init_db()
     asyncio.run(main())
 
