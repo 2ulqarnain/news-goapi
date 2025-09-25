@@ -59,6 +59,7 @@ func ScrapeRadioPakistan() ([]model.News, error) {
 		}
 		newsList = append(newsList, newsItem)
 		newsURLs = append(newsURLs, siteURL+newsLink)
+		W
 	})
 
 	// Handle errors
