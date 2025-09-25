@@ -2,9 +2,9 @@ package model
 
 type News struct {
 	Slug        string  `json:"slug"`
-	Headline    string  `json:"headline"`
+	Title       string  `json:"title"`
 	PublishedOn string  `json:"publishedOn"`
 	ImageUrl    *string `json:"imageUrl"`
 	NewsUrl     string  `json:"newsUrl"`
-	Body        string  `json:"body"`
+	Content     string  `json:"content"`
 }

@@ -1,0 +1,4 @@
+
+# Scrape news
+GET {{host}}/scrape/init
+Accept: application/json

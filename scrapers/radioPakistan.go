@@ -9,6 +9,7 @@ import (
 
 	"github.com/gocolly/colly"
 	"github.com/yourusername/news-server/internal/model"
+	"github.com/yourusername/news-server/internal/repository"
 )
 
 var siteURL = "https://radio.gov.pk"
@@ -52,14 +53,13 @@ func ScrapeRadioPakistan() ([]model.News, error) {
 
 		newsItem := model.News{
 			Slug:        slug,
-			Headline:    headline,
+			Title:       headline,
 			PublishedOn: publishedOn,
 			NewsUrl:     siteURL + newsLink,
 			ImageUrl:    &imageURL,
 		}
 		newsList = append(newsList, newsItem)
 		newsURLs = append(newsURLs, siteURL+newsLink)
-		W
 	})
 
 	// Handle errors
@@ -82,7 +82,8 @@ func ScrapeRadioPakistan() ([]model.News, error) {
 
 	allNewsBodies := ScrapeMultipleNews(newsURLs)
 	for i := range newsList {
-		newsList[i].Body = allNewsBodies[i]
+		newsList[i].Content = allNewsBodies[i]
+		repository.AddSingleNews(newsList[i])
 	}
 
 	return newsList, nil

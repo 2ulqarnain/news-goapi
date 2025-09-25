@@ -1,0 +1,5 @@
+
+# Get All News
+
+GET {{host}}/news
+Accept: application/json

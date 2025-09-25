@@ -8,8 +8,8 @@ import (
 )
 
 type Config struct {
-	DB_FILE_PATH string
-	SERVER_PORT  string
+	DbFilePath string
+	ServerPort string
 }
 
 func Load() Config {
@@ -24,14 +24,14 @@ func Load() Config {
 		log.Fatal("Missing SERVER_PORT .env variable!")
 	}
 
-	DB_FILE_PATH := os.Getenv("DB_FILE_PATH")
+	DbFilePath := os.Getenv("DB_FILE_PATH")
 
-	if DB_FILE_PATH == "" {
+	if DbFilePath == "" {
 		log.Fatal("Missing DB_FILE_PATH .env variable")
 	}
 
 	return Config{
-		DB_FILE_PATH: DB_FILE_PATH,
-		SERVER_PORT:  PORT,
+		DbFilePath: DbFilePath,
+		ServerPort: PORT,
 	}
 }
