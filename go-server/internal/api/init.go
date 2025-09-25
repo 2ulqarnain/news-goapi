@@ -18,4 +18,7 @@ func registerRoutes(app *fiber.App) {
 	news := app.Group("/news")
 	news.Get("/", GetAllNews)
 	news.Get("/:slug", GetNewsBySlug)
+
+	scrape := app.Group("/scrape")
+	scrape.Get("/init", InitScrape)
 }

@@ -9,6 +9,11 @@ import (
 func main() {
 	appConfig := config.Load()
 	repository.InitDB(appConfig.DB_FILE_PATH)
-	defer repository.Close()
+	defer func() {
+		err := repository.Close()
+		if err != nil {
+
+		}
+	}()
 	api.InitFiber(appConfig.SERVER_PORT)
 }
