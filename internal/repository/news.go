@@ -8,7 +8,43 @@ import (
 	"github.com/yourusername/news-server/internal/model"
 )
 
-func GetAllNews() ([]model.News, error) {
+func GetAllNews(limit int) ([]model.News, error) {
+	var (
+		dbQuery string
+		rows    *sql.Rows
+		err     error
+	)
+	if limit > 0 {
+		dbQuery = "SELECT * FROM news LIMIT ?"
+		rows, err = db.Query(dbQuery, limit)
+	} else {
+		dbQuery = "SELECT * FROM news"
+		rows, err = db.Query(dbQuery)
+	}
+	if err != nil {
+		return nil, err
+	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+
+		}
+	}(rows)
+
+	var news []model.News
+	for rows.Next() {
+		var n model.News
+		err := rows.Scan(&n.Slug, &n.Title, &n.PublishedOn, &n.NewsUrl, &n.ImageUrl, &n.Content)
+		if err != nil {
+			log.Printf("Couldn't load data from database!, Error: %v", err)
+			return nil, err
+		}
+		news = append(news, n)
+	}
+	return news, rows.Err()
+}
+
+func GetNewsBySlug(slug string) ([]model.News, error) {
 	rows, err := db.Query("SELECT * from news;")
 	if err != nil {
 		return nil, err

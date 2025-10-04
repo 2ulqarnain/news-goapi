@@ -10,6 +10,7 @@ import (
 	"github.com/gocolly/colly"
 	"github.com/yourusername/news-server/internal/model"
 	"github.com/yourusername/news-server/internal/repository"
+	"github.com/yourusername/news-server/internal/utils"
 )
 
 var siteURL = "https://radio.gov.pk"
@@ -21,26 +22,19 @@ func ScrapeRadioPakistan() ([]model.News, error) {
 	// Create collector
 	c := colly.NewCollector(
 		colly.AllowedDomains("radio.gov.pk"),
+		colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118 Safari/537.36"),
 	)
 
-	// Find all links that have a child with class containing 'title'
-	c.OnHTML("a:has([class*='title'])", func(e *colly.HTMLElement) {
-		newsLink := e.Attr("href")
-		if newsLink == "" {
+	seen := make(map[string]bool)
+	//Find all links that have a child with class containing 'title'
+	c.OnHTML("div.col-md-6.col-lg-6:has(img[src*='newsimage'])", func(e *colly.HTMLElement) {
+		aTagChildren := e.DOM.ChildrenFiltered("a")
+		if aTagChildren.Length() == 0 {
 			return
 		}
-
-		// Extract headline text
-		headline := e.ChildText("[class*='title']")
-
-		// Extract image (if exists)
-		imageURL := ""
-		if src := e.ChildAttr("img", "src"); src != "" {
-			if strings.HasPrefix(src, "http") {
-				imageURL = src
-			} else {
-				imageURL = "https:" + src
-			}
+		newsLink := e.ChildAttr("a", "href")
+		if newsLink == "" {
+			return
 		}
 
 		// Extract published_on and slug from URL
@@ -51,10 +45,28 @@ func ScrapeRadioPakistan() ([]model.News, error) {
 		publishedOn := parts[len(parts)-2]
 		slug := parts[len(parts)-1]
 
+		if seen[slug] {
+			return
+		}
+		seen[slug] = true
+
+		// Extract headline text
+		headline := strings.Trim(e.Text, " \n")
+
+		// Extract image (if exists)
+		imageURL := ""
+		if src := e.ChildAttr("img[src*='newsimage']", "src"); src != "" {
+			if strings.HasPrefix(src, "http") {
+				imageURL = src
+			} else {
+				imageURL = "https:" + src
+			}
+		}
+
 		newsItem := model.News{
 			Slug:        slug,
 			Title:       headline,
-			PublishedOn: publishedOn,
+			PublishedOn: utils.ConvertDateToISO(publishedOn),
 			NewsUrl:     siteURL + newsLink,
 			ImageUrl:    &imageURL,
 		}
@@ -71,6 +83,7 @@ func ScrapeRadioPakistan() ([]model.News, error) {
 	// After scraping
 	c.OnScraped(func(_ *colly.Response) {
 		fmt.Println("Site Scraped Successfully!")
+		fmt.Printf("\nTotal News Found: %d\n", len(newsList))
 	})
 
 	// Start
@@ -82,7 +95,7 @@ func ScrapeRadioPakistan() ([]model.News, error) {
 
 	allNewsBodies := ScrapeMultipleNews(newsURLs)
 	for i := range newsList {
-		newsList[i].Content = allNewsBodies[i]
+		newsList[i].Content = strings.Trim(allNewsBodies[i], " \n")
 		repository.AddSingleNews(newsList[i])
 	}
 

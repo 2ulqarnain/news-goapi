@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/yourusername/news-server/internal/model"
@@ -9,7 +10,15 @@ import (
 )
 
 func GetAllNews(ctx *fiber.Ctx) error {
-	news, err := repository.GetAllNews()
+	limitParam := ctx.Query("limit", "0")
+	limit, err := strconv.Atoi(limitParam)
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(model.Response{
+			Message: "Invalid limit parameter!",
+			Data:    nil,
+		})
+	}
+	news, err := repository.GetAllNews(limit)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(model.Response{
 			Status:  fiber.StatusInternalServerError,
