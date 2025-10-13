@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/gocolly/colly"
-	"github.com/yourusername/news-server/internal/model"
-	"github.com/yourusername/news-server/internal/repository"
-	"github.com/yourusername/news-server/internal/utils"
+	"news-server/internal/model"
+	"news-server/internal/repository"
+	"news-server/internal/utils"
 )
 
 var siteURL = "https://radio.gov.pk"

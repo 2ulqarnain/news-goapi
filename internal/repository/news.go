@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/yourusername/news-server/internal/model"
+	"news-server/internal/model"
 )
 
 func GetAllNews(limit int) ([]model.News, error) {
@@ -34,7 +34,7 @@ func GetAllNews(limit int) ([]model.News, error) {
 	var news []model.News
 	for rows.Next() {
 		var n model.News
-		err := rows.Scan(&n.Slug, &n.Title, &n.PublishedOn, &n.NewsUrl, &n.ImageUrl, &n.Content)
+		err := rows.Scan(&n.Slug, &n.Title, &n.PublishedOn, &n.ImageUrl, &n.NewsUrl, &n.Content)
 		if err != nil {
 			log.Printf("Couldn't load data from database!, Error: %v", err)
 			return nil, err
@@ -44,30 +44,30 @@ func GetAllNews(limit int) ([]model.News, error) {
 	return news, rows.Err()
 }
 
-func GetNewsBySlug(slug string) ([]model.News, error) {
-	rows, err := db.Query("SELECT * from news;")
-	if err != nil {
-		return nil, err
-	}
-	defer func(rows *sql.Rows) {
-		err := rows.Close()
-		if err != nil {
-
-		}
-	}(rows)
-
-	var news []model.News
-	for rows.Next() {
-		var n model.News
-		err := rows.Scan(&n.Slug, &n.Title, &n.PublishedOn, &n.NewsUrl, &n.ImageUrl, &n.Content)
-		if err != nil {
-			log.Printf("Couldn't load data from database!, Error: %v", err)
-			return nil, err
-		}
-		news = append(news, n)
-	}
-	return news, rows.Err()
-}
+//func GetNewsBySlug(slug string) ([]model.News, error) {
+//	rows, err := db.Query("SELECT * from news;")
+//	if err != nil {
+//		return nil, err
+//	}
+//	defer func(rows *sql.Rows) {
+//		err := rows.Close()
+//		if err != nil {
+//
+//		}
+//	}(rows)
+//
+//	var news []model.News
+//	for rows.Next() {
+//		var n model.News
+//		err := rows.Scan(&n.Slug, &n.Title, &n.PublishedOn, &n.NewsUrl, &n.ImageUrl, &n.Content)
+//		if err != nil {
+//			log.Printf("Couldn't load data from database!, Error: %v", err)
+//			return nil, err
+//		}
+//		news = append(news, n)
+//	}
+//	return news, rows.Err()
+//}
 
 //func AddMultipleNews(newsList []model.News) {
 //	tx, err := db.Begin()

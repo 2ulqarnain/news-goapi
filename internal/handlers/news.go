@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"strconv"
 
+	"news-server/internal/model"
+	"news-server/internal/repository"
+
 	"github.com/gofiber/fiber/v2"
-	"github.com/yourusername/news-server/internal/model"
-	"github.com/yourusername/news-server/internal/repository"
 )
 
 func GetAllNews(ctx *fiber.Ctx) error {
@@ -21,14 +22,14 @@ func GetAllNews(ctx *fiber.Ctx) error {
 	news, err := repository.GetAllNews(limit)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(model.Response{
-			Status:  fiber.StatusInternalServerError,
+			Ok:      false,
 			Message: fmt.Sprintf("%v", err),
 			Data:    nil,
 		})
 	}
 	return ctx.JSON(model.Response{
-		Status: fiber.StatusOK,
-		Data:   news,
+		Ok:   true,
+		Data: news,
 	})
 }
 

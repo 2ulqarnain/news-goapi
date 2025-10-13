@@ -17,7 +17,7 @@ func InitDB(dbFilePath string) {
 	}
 
 	if err := db.Ping(); err != nil {
-		log.Fatalf("Unable to ping DB: %v", err)
+		log.Fatalf("unable to ping DB, likely the db doesn't exist: %v", err)
 	}
 
 	log.Println("Database successfully connected!")

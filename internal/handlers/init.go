@@ -19,18 +19,29 @@ func InitFiber(port string) {
 	registerNewsRoutes(app)
 	registerScrapeRoutes(app)
 
+	handle404Errors(app)
+
 	if err := app.Listen(":" + port); err != nil {
 		log.Fatalf("%v", err)
 	}
 }
 
 func registerScrapeRoutes(app *fiber.App) {
-	scrape := app.Group("/scrape")
-	scrape.Get("/init", InitScrape)
+	scrape := app.Group("/crawl")
+	scrape.Get("/", InitScrape)
 }
 
 func registerNewsRoutes(app *fiber.App) {
 	news := app.Group("/news")
 	news.Get("/", GetAllNews)
 	news.Get("/:slug", GetNewsBySlug)
+}
+
+func handle404Errors(app *fiber.App) {
+	app.Use(func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"ok":      false,
+			"message": "Not Found",
+		})
+	})
 }

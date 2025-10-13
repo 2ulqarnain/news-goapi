@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/yourusername/news-server/internal/config"
-	"github.com/yourusername/news-server/internal/handlers"
-	"github.com/yourusername/news-server/internal/repository"
+	"news-server/internal/config"
+	"news-server/internal/handlers"
+	"news-server/internal/repository"
 )
 
 func main() {

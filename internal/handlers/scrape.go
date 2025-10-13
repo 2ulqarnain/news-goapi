@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"fmt"
+	"news-server/internal/model"
+	"news-server/scrapers"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/yourusername/news-server/scrapers"
 )
 
 func InitScrape(ctx *fiber.Ctx) error {
@@ -13,7 +14,16 @@ func InitScrape(ctx *fiber.Ctx) error {
 	if err != nil {
 		fmt.Println(err)
 	}
+	if len(newsList) == 0 {
+		return ctx.JSON(model.Response{
+			Ok:      false,
+			Message: "No News Scraped, Likely DOM has changed!",
+		})
+	}
 
-	return ctx.JSON(newsList)
+	return ctx.JSON(model.Response{
+		Ok:      true,
+		Message: "Crawled Successfully!",
+	})
 
 }

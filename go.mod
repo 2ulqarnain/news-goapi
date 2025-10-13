@@ -1,4 +1,4 @@
-module github.com/yourusername/news-server
+module news-server
 
 go 1.24.0
 

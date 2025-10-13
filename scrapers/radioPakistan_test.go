@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/gocolly/colly"
-	"github.com/yourusername/news-server/internal/model"
+	"news-server/internal/model"
 )
 
 func TestScrapeNews(t *testing.T) {
