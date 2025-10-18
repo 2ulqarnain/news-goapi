@@ -16,6 +16,7 @@ func InitFiber(port string) {
 
 	app.Use(logger.New())
 
+	app.Get("/", func(c *fiber.Ctx) error { return c.SendString("News Server Running...") })
 	registerNewsRoutes(app)
 	registerScrapeRoutes(app)
 
