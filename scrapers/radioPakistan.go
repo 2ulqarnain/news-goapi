@@ -7,10 +7,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gocolly/colly"
 	"news-server/internal/model"
 	"news-server/internal/repository"
 	"news-server/internal/utils"
+
+	"github.com/gocolly/colly"
 )
 
 var siteURL = "https://radio.gov.pk"
@@ -69,6 +70,7 @@ func ScrapeRadioPakistan() ([]model.News, error) {
 			PublishedOn: utils.ConvertDateToISO(publishedOn),
 			NewsUrl:     siteURL + newsLink,
 			ImageUrl:    &imageURL,
+			Source:      "radio.gov.pk",
 		}
 		newsList = append(newsList, newsItem)
 		newsURLs = append(newsURLs, siteURL+newsLink)

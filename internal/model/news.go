@@ -7,4 +7,11 @@ type News struct {
 	ImageUrl    *string `json:"imageUrl"`
 	NewsUrl     string  `json:"newsUrl"`
 	Content     string  `json:"content"`
+	Source      string  `json:"source"`
+}
+
+type Headline struct {
+	Url      string `json:"url"`
+	Title    string `json:"title"`
+	ImageURL string `json:"imageUrl"`
 }
