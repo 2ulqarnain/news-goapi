@@ -1,4 +1,4 @@
-package repository
+package database
 
 import (
 	"database/sql"
@@ -7,7 +7,7 @@ import (
 	_ "github.com/mattn/go-sqlite3" // or postgres driver
 )
 
-func InitDB(dbFilePath string) *sql.DB {
+func Init(dbFilePath string) *sql.DB {
 	sqliteDB, err := sql.Open("sqlite3", dbFilePath)
 	if err != nil {
 		log.Fatalf("Failed to open DB: %v", err)
@@ -18,6 +18,5 @@ func InitDB(dbFilePath string) *sql.DB {
 	}
 
 	log.Println("Database successfully connected!")
-	db = sqliteDB
 	return sqliteDB
 }
