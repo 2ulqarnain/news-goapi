@@ -1,22 +1,33 @@
 package service
 
 import (
+	"context"
 	"news-server/internal/model"
 	"news-server/internal/repository"
 )
 
-type NewsService struct {
-	repo *repository.NewsRepository
+type NewsService interface {
+	GetAllNews(ctx context.Context) ([]model.News, error)
+	AddSingleNews(ctx context.Context, news model.News) error
+	AddMultipleNews(ctx context.Context, news []model.News) error
 }
 
-func NewNewsService(repo *repository.NewsRepository) *NewsService {
-	return &NewsService{repo: repo}
+type newsService struct {
+	repo repository.NewsRepository
 }
 
-func (s *NewsService) GetAllNews(limit int) ([]model.News, error) {
-	return s.repo.GetAllNews(limit)
+func NewNewsService(repo repository.NewsRepository) NewsService {
+	return &newsService{repo: repo}
 }
 
-func (s *NewsService) GetNewsBySlug(slug string) {
-	return
+func (s *newsService) AddSingleNews(ctx context.Context, news model.News) error {
+	return s.repo.AddSingleNews(ctx, news)
+}
+
+func (s *newsService) AddMultipleNews(ctx context.Context, news []model.News) error {
+	return s.repo.AddMultipleNews(ctx, news)
+}
+
+func (s *newsService) GetAllNews(ctx context.Context) ([]model.News, error) {
+	return s.repo.GetAllNews(ctx)
 }

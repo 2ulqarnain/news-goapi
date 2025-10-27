@@ -3,11 +3,12 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"news-server/internal/model"
 )
 
 type NewsRepository interface {
-	AddSingleNews(news model.News) error
+	AddSingleNews(ctx context.Context, news model.News) error
 	AddMultipleNews(ctx context.Context, news []model.News) error
 	GetAllNews(ctx context.Context) ([]model.News, error)
 	SearchNewsBySlug(ctx context.Context, slug string) ([]model.News, error)
@@ -21,12 +22,19 @@ func NewNewsRepository(db *sql.DB) NewsRepository {
 	return &newsRepository{db: db}
 }
 
-func (r *newsRepository) AddSingleNews(news model.News) error {
-	query := "INSERT INTO news (slug,title,published_on,news_url,image_url,content,source) VALUES (?,?,?,?,?,?,?)"
-	_, err := r.db.Exec(query, news.Slug, news.Title, news.PublishedOn, news.NewsUrl, news.Content, news.Source)
+func (r *newsRepository) AddSingleNews(ctx context.Context, news model.News) error {
+	query := "INSERT INTO news (slug,title,published_on,news_url,image_url,content,source ) VALUES (?,?,?,?,?,?,?)"
+	stmt, err := r.db.PrepareContext(ctx, query)
 	if err != nil {
 		return err
 	}
+	defer stmt.Close()
+	res, err := stmt.ExecContext(ctx, news.Slug, news.Title, news.PublishedOn, news.NewsUrl, news.ImageUrl, news.Content, news.Source)
+	if err != nil {
+		return err
+	}
+	id, _ := res.LastInsertId()
+	fmt.Printf("Last inserted ID: %d\n", id)
 	return nil
 }
 

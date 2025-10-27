@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"news-server/internal/model"
-	"news-server/internal/repository"
 	"news-server/internal/utils"
 
 	"github.com/gocolly/colly"
@@ -89,22 +88,21 @@ func ScrapeRadioPakistan() ([]model.News, error) {
 	})
 
 	// Start
-	fmt.Println("Visiting", siteURL)
+	fmt.Printf("\nVisiting %s\n", siteURL)
 	err := c.Visit(siteURL)
 	if err != nil {
 		return nil, err
 	}
 
-	allNewsBodies := ScrapeMultipleNews(newsURLs)
+	allNewsBodies := scrapeMultipleNews(newsURLs)
 	for i := range newsList {
 		newsList[i].Content = strings.Trim(allNewsBodies[i], " \n")
-		repository.AddSingleNews(newsList[i])
 	}
 
 	return newsList, nil
 }
 
-func ScrapeRadioPkNewsByURL(url string) string {
+func scrapeRadioPkNewsByURL(url string) string {
 	var news string
 	c := colly.NewCollector(
 		colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118 Safari/537.36"),
@@ -130,14 +128,14 @@ func ScrapeRadioPkNewsByURL(url string) string {
 	return news
 }
 
-func ScrapeMultipleNews(urls []string) []string {
+func scrapeMultipleNews(urls []string) []string {
 	newsList := make([]string, len(urls))
 	var wg sync.WaitGroup
 	for i, url := range urls {
 		wg.Add(1)
 		go func(i int, url string) {
 			defer wg.Done()
-			newsList[i] = ScrapeRadioPkNewsByURL(url)
+			newsList[i] = scrapeRadioPkNewsByURL(url)
 		}(i, url)
 	}
 	wg.Wait()

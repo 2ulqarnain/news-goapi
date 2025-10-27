@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func InitScrape(ctx *fiber.Ctx) error {
+func ScrapeAllSites(ctx *fiber.Ctx) error {
 	newsList, err := scrapers.ScrapeRadioPakistan()
 
 	if err != nil {
