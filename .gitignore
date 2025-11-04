@@ -1,3 +1,4 @@
 db/news.db
 .env
 app
+/data/news.db
