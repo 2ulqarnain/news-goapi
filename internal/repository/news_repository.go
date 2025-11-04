@@ -60,7 +60,7 @@ func (r *newsRepository) AddMultipleNews(ctx context.Context, news []model.News)
 }
 
 func (r *newsRepository) GetAllNews(ctx context.Context) ([]model.News, error) {
-	query := "SELECT slug, title, published_on, image_url, news_url, source FROM news;"
+	query := "SELECT slug, title, published_on, image_url, news_url, source FROM news ORDER BY published_on DESC;"
 	rows, err := r.db.QueryContext(ctx, query)
 	if err != nil {
 		return nil, err
